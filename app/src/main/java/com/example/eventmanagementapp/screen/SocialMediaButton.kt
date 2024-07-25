@@ -21,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.eventmanagementapp.R
 
 @Composable
 fun SocialLoginButton(
@@ -36,10 +37,10 @@ fun SocialLoginButton(
             containerColor = backgroundColor,
             contentColor = contentColor
         ),
-        shape = RoundedCornerShape(4.dp),
+        shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp)
+            .height(82.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -51,13 +52,13 @@ fun SocialLoginButton(
             Image(
                 painter = painterResource(id = icon),
                 contentDescription = "Login icon",
-                modifier = Modifier.size(28.dp)
+                modifier = Modifier.size(if (icon == R.drawable.google) 28.dp else 34.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = text,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Light
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium
             )
         }
     }

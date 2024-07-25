@@ -78,11 +78,11 @@ fun LoginScreen(
         Image(
             painter = painterResource(id = R.drawable.icon),
             contentDescription = "EventHub Logo",
-            modifier = Modifier.size(140.dp)
+            modifier = Modifier.size(168.dp)
         )
 
 
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Text(
             text = "Sign in",
@@ -143,8 +143,8 @@ fun LoginScreen(
                     checked = rememberMe,
                     onCheckedChange = { rememberMe = it },
                     colors = SwitchDefaults.colors(
-                        checkedThumbColor = colorResource(id = R.color.light_blue),
-                        checkedTrackColor = Color.White
+                        checkedThumbColor = Color.White,
+                        checkedTrackColor = colorResource(id = R.color.light_blue)
                     )
                 )
                 Text("Remember Me",
@@ -155,7 +155,10 @@ fun LoginScreen(
                 "Forgot Password?",
                 color = Color.Black,
                 fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.clickable {
+                    //navController.navigate("forgot_password")
+                }
             )
         }
 
@@ -192,12 +195,12 @@ fun LoginScreen(
                 .fillMaxWidth()
             )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(40.dp)
+                .height(48.dp)
                 .padding(start = 24.dp, end = 24.dp),
             shape = RoundedCornerShape(4.dp),
             shadowElevation = 4.dp
@@ -210,15 +213,15 @@ fun LoginScreen(
         }
 
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(40.dp)
+                .height(48.dp)
                 .padding(start = 24.dp, end = 24.dp),
-            shape = RoundedCornerShape(4.dp),
-            shadowElevation = 4.dp
+            shape = RoundedCornerShape(8.dp),
+            shadowElevation = 2.dp
         ) {
             SocialLoginButton(
                 text = "Login with Facebook",
