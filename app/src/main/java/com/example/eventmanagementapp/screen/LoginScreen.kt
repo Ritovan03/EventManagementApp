@@ -1,7 +1,9 @@
 package com.example.eventmanagementapp.screen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -45,19 +48,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.eventmanagementapp.R
 
 
-@Composable
-@Preview
-fun LoginScreenPreview()
-{
-    LoginScreen()
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen()
+fun LoginScreen(
+    navController: NavHostController
+)
 {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -73,12 +73,12 @@ fun LoginScreen()
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(36.dp))
 
         Image(
             painter = painterResource(id = R.drawable.icon),
             contentDescription = "EventHub Logo",
-            modifier = Modifier.size(128.dp)
+            modifier = Modifier.size(140.dp)
         )
 
 
@@ -144,7 +144,7 @@ fun LoginScreen()
                     onCheckedChange = { rememberMe = it },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = colorResource(id = R.color.light_blue),
-                        checkedTrackColor = colorResource(id = R.color.light_blue)
+                        checkedTrackColor = Color.White
                     )
                 )
                 Text("Remember Me",
@@ -162,22 +162,94 @@ fun LoginScreen()
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = { /* Handle sign in */ },
+            onClick = {
+                Log.d("LoginScreen", "Sign In button pressed")
+                // Simulate successful login
+                navController.navigate("main") {
+                    popUpTo("login") {
+                        inclusive = true
+                    } }
+                      },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.light_blue)),
-            shape = RoundedCornerShape(8.dp)
+                .height(56.dp)
+                .padding(start = 16.dp, end = 16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.button_blue_color)),
+            shape = RoundedCornerShape(12.dp)
         ) {
             Text("SIGN IN", color = Color.White)
         }
 
-        Text("OR",
-            color = Color.Gray,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
+        
 
         Spacer(modifier = Modifier.height(24.dp))
+
+        Text(text = "OR",
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp,
+            color = colorResource(id = R.color.text_grey),
+            modifier = Modifier
+                .fillMaxWidth()
+            )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp)
+                .padding(start = 24.dp, end = 24.dp),
+            shape = RoundedCornerShape(4.dp),
+            shadowElevation = 4.dp
+        ) {
+            SocialLoginButton(
+                text = "Login with Google",
+                icon = R.drawable.google,
+                onClick = { /* Handle Google login */ }
+            )
+        }
+
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp)
+                .padding(start = 24.dp, end = 24.dp),
+            shape = RoundedCornerShape(4.dp),
+            shadowElevation = 4.dp
+        ) {
+            SocialLoginButton(
+                text = "Login with Facebook",
+                icon = R.drawable.facebook,
+                onClick = { /* Handle Facebook login */ },
+            )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+        Row(
+
+        ){
+            Text("Don't have an account?  ",
+                fontSize = 16.sp,
+                color = Color.Black
+                )
+
+            Text(
+                "Sign up",
+                fontSize = 16.sp,
+                color = colorResource(id = R.color.light_blue),
+                //fontWeight = FontWeight.Medium,
+                modifier = Modifier.clickable {
+                    Log.d("Signin", "Sign In button pressed")
+                    navController.navigate("signup") }
+            )
+        }
+
+
+
+
 
 
 
