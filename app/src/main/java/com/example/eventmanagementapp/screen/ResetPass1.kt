@@ -14,11 +14,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -41,21 +44,16 @@ import com.example.eventmanagementapp.R
 fun ResetPass1(
     navController: NavHostController,
 ) {
-    var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
-    var confirmPasswordVisible by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         // Back button
         IconButton(
             onClick = { navController.navigate("login") },
             modifier = Modifier
-                .padding(top = 44.dp, start = 4.dp)
+                .padding(top = 16.dp, start = 16.dp)
                 .align(Alignment.TopStart)
-                .size(56.dp)
+                .size(24.dp)
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -63,33 +61,47 @@ fun ResetPass1(
                 tint = Color.Black
             )
         }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp,top = 4.dp),
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.Center
         ) {
             Text(
                 text = "Reset Password",
                 fontSize = 24.sp,
-                modifier = Modifier.padding(bottom = 16.dp)
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = "Please enter your email address to\nrequest a password reset",
-                fontSize = 24.sp,
-                modifier = Modifier.padding(bottom = 16.dp)
+                fontSize = 14.sp,
+                color = Color.Gray,
+                modifier = Modifier.padding(bottom = 24.dp)
             )
 
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("abc@email.com") },
+                placeholder = { Text("abc@email.com", color = Color.LightGray) },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = Color.LightGray,
+                    focusedBorderColor = Color.Blue
+                ),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Email,
+                        contentDescription = "Email icon",
+                        tint = Color.Gray
+                    )
+                }
             )
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = {
@@ -97,20 +109,15 @@ fun ResetPass1(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(48.dp),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
-                    colorResource(id = R.color.button_blue_color),
+                    containerColor = colorResource(id = R.color.button_blue_color),
                     contentColor = Color.White
                 )
             ) {
-                Text("SIGN UP", color = Color.White)
+                Text("SEND", fontSize = 16.sp)
             }
-
-
-
-
         }
     }
-
 }
