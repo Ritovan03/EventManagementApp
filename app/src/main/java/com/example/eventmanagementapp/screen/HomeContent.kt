@@ -12,16 +12,25 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
@@ -29,32 +38,60 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.eventmanagementapp.R
 
+
+
 @Composable
-fun HomeContent(
-    navController: NavHostController
-) {
+fun HomeContent(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF4A4AFF))
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        TopBar()
-        SearchBar()
-        CategoryButtons()
-        // Removed EventsSection as it's not visible in the image
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    colorResource(id = R.color.light_blue),
+                    shape = RoundedCornerShape(bottomEnd = 24.dp, bottomStart = 24.dp)
+                )
+                .height(180.dp) // Increase the height of the Box
+        ) {
+            Column {
+                TopBar()
+                SearchBar()
+                Spacer(modifier = Modifier.height(20.dp)) // Add space to accommodate the FilterRow
+            }
+        }
+        FilterRow(modifier = Modifier.offset(y = (-40).dp)) // Decrease the vertical offset
+        Spacer(modifier = Modifier.height(4.dp))
+        UpcomingEvents()
+        Spacer(modifier = Modifier.height(16.dp))
+        InviteFriends()
     }
 }
 
@@ -64,183 +101,285 @@ fun TopBar() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Icon(
-            imageVector = Icons.Default.Menu,
-            contentDescription = "Menu",
-            tint = Color.White
-        )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                "New Yourk, USA",  // Kept the typo as shown in the image
-                color = Color.White,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
+        IconButton(onClick = { /* TODO: Handle settings click */ }) {
             Icon(
-                imageVector = Icons.Default.ArrowDropDown,
-                contentDescription = "Location Dropdown",
-                tint = Color.White
+                painter = painterResource(id = R.drawable.baseline_settings_24), // Replace with the actual settings icon resource
+                contentDescription = "Settings",
+                tint = Color.White,
+                modifier = Modifier.size(36.dp)
             )
         }
-        Icon(
-            painter = painterResource(id = R.drawable.bell),
-            contentDescription = "Notifications",
-            tint = Color.White
-        )
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = "Current Location", color = Color.White, fontSize = 12.sp)
+            Text(text = "New York, USA", color = Color.White, fontSize = 16.sp)
+        }
+        IconButton(
+            onClick = { /* TODO: Handle notification click */ },
+            modifier = Modifier
+                .size(36.dp)
+                .background(Color.White, shape = CircleShape)
+                .padding(8.dp)
+        ) {
+            Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = colorResource(id = R.color.light_blue))
+        }
     }
 }
 
 @Composable
 fun SearchBar() {
-    Row(
+    var textState by remember { mutableStateOf(TextFieldValue("")) }
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .background(Color.White, RoundedCornerShape(24.dp))
-            .padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .background(Color.White, shape = MaterialTheme.shapes.medium)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = "Search",
-            tint = Color.Gray
-        )
-        Text(
-            "Search...",
-            color = Color.Gray,
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 8.dp)
-        )
-        Icon(
-            painter = painterResource(id = R.drawable.filter),
-            contentDescription = "Filters",
-            tint = Color.Gray
+        BasicTextField(
+            value = textState,
+            onValueChange = { textState = it },
+            modifier = Modifier.fillMaxWidth(),
+            textStyle = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
+            singleLine = true,
+            decorationBox = { innerTextField ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.Gray)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    if (textState.text.isEmpty()) {
+                        Text("Search...", color = Color.Gray)
+                    }
+                    innerTextField()
+                }
+            }
         )
     }
 }
 
 @Composable
-fun CategoryButtons() {
-    Row(
+fun FilterRow(modifier: Modifier = Modifier) {
+    val filters = listOf("Sports", "Music", "Food", "Art", "Tech")
+    val colors = listOf(
+        Color(0xFFFF5722), // Sports
+        Color(0xFFFFC107), // Music
+        Color(0xFF4CAF50), // Food
+        Color(0xFF2196F3), // Art
+        Color(0xFF9C27B0)  // Tech
+    )
+
+    LazyRow(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp, horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(filters.zip(colors)) { (filter, color) ->
+            FilterButton(filter = filter, backgroundColor = color)
+        }
+    }
+}
+
+@Composable
+fun FilterButton(filter: String, backgroundColor: Color) {
+    Button(
+        onClick = { /* TODO: Handle filter click */ },
+        colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
+        modifier = Modifier.height(40.dp)
+    ) {
+        Text(text = filter, color = Color.White)
+    }
+}
+
+
+@Composable
+fun UpcomingEvents() {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(top = 8.dp, bottom = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CategoryButton("Sports", Color(0xFFFF6B6B), R.drawable.sports)
-        CategoryButton("Music", Color(0xFFFFD93D), R.drawable.music)
-        CategoryButton("Food", Color(0xFF6BCB77), R.drawable.cutlery)
+        // Header row remains the same
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Upcoming Events",
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "See All",
+                    modifier = Modifier.alpha(0.7f),
+                    fontSize = 16.sp,
+                    color = Color.Gray
+                )
+                Icon(
+                    Icons.Default.PlayArrow,
+                    contentDescription = "See All",
+                    tint = Color.Gray
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item {
+                EventCard(
+                    date = "10",
+                    month = "JUNE",
+                    title = "International Band Mu...",
+                    location = "36 Guild Street London, UK",
+                    attendees = 20,
+                    imageResId = R.drawable.img // Replace with your actual drawable resource
+                )
+            }
+            item {
+                EventCard(
+                    date = "10",
+                    month = "JUL",
+                    title = "Jo Malone London's...",
+                    location = "Radius Gallery • Santa Cruz, CA",
+                    attendees = 12,
+                    imageResId = R.drawable.img // Replace with your actual drawable resource
+                )
+            }
+        }
     }
 }
 
 @Composable
-fun CategoryButton(text: String, color: Color, iconResId: Int) {
-    Button(
-        onClick = { },
-        colors = ButtonDefaults.buttonColors(containerColor = color),
-        shape = RoundedCornerShape(24.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+fun EventCard(
+    date: String,
+    month: String,
+    title: String,
+    location: String,
+    attendees: Int,
+    imageResId: Int
+) {
+    Card(
+        modifier = Modifier
+            .width(250.dp)
+            .height(280.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Icon(
-            painter = painterResource(id = iconResId),
-            contentDescription = null,
-            tint = Color.White,
-            modifier = Modifier.size(18.dp)
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(text, color = Color.White, fontSize = 14.sp)
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Background Image
+            Image(
+                painter = painterResource(id = imageResId),
+                contentDescription = "Event background",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+
+            // Overlay to ensure text is readable
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f))
+            )
+
+            // Content
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .background(Color.White, RoundedCornerShape(8.dp))
+                            .padding(8.dp)
+                    ) {
+                        Text(
+                            text = date,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 24.sp,
+                            color = Color.Black
+                        )
+                        Text(
+                            text = month,
+                            fontSize = 12.sp,
+                            color = Color.Black
+                        )
+                    }
+                    Icon(
+                        Icons.Default.FavoriteBorder,
+                        contentDescription = "Bookmark",
+                        tint = Color.Red
+                    )
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Text(
+                    text = title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.White
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.Default.LocationOn,
+                        contentDescription = "Location",
+                        modifier = Modifier.size(16.dp),
+                        tint = Color.White
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = location,
+                        fontSize = 14.sp,
+                        color = Color.White
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.Default.Person,
+                        contentDescription = "Attendees",
+                        modifier = Modifier.size(16.dp),
+                        tint = Color.White
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "+$attendees Going",
+                        fontSize = 14.sp,
+                        color = Color.White
+                    )
+                }
+            }
+        }
     }
 }
+@Composable
+fun InviteFriends() {
 
-//@Composable
-//fun EventsSection() {
-//    Column(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .background(Color.White, RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-//            .padding(16.dp)
-//    ) {
-//        Row(
-//            modifier = Modifier.fillMaxWidth(),
-//            horizontalArrangement = Arrangement.SpaceBetween,
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Text("Upcoming Events", fontWeight = FontWeight.Bold)
-//            Text("See All", color = Color.Blue)
-//        }
-//        Spacer(modifier = Modifier.height(16.dp))
-//        LazyRow(
-//            horizontalArrangement = Arrangement.spacedBy(16.dp)
-//        ) {
-//            item { EventCard("International Band Mu...", "10\nJUNE", Color(0xFFFFC0CB)) }
-//            item { EventCard("Jo Malone", "10\nJUNE", Color(0xFFADD8E6)) }
-//        }
-//        Spacer(modifier = Modifier.height(16.dp))
-//        InviteFriendsCard()
-//    }
-//}
-//
-//@Composable
-//fun EventCard(title: String, date: String, color: Color) {
-//    Card(
-//        modifier = Modifier
-//            .width(160.dp)
-//            .height(200.dp),
-//        shape = RoundedCornerShape(16.dp)
-//    ) {
-//        Column {
-//            Box(
-//                modifier = Modifier
-//                    .weight(1f)
-//                    .fillMaxWidth()
-//                    .background(color)
-//            ) {
-//                Text(
-//                    date,
-//                    color = Color.White,
-//                    fontWeight = FontWeight.Bold,
-//                    modifier = Modifier
-//                        .align(Alignment.TopEnd)
-//                        .padding(8.dp)
-//                )
-//            }
-//            Column(modifier = Modifier.padding(8.dp)) {
-//                Text(title, fontWeight = FontWeight.Bold)
-//                Row(verticalAlignment = Alignment.CenterVertically) {
-//                    // Add user avatars here
-//                    Text("+20 Going", color = Color.Gray)
-//                }
-//            }
-//        }
-//    }
-//}
-//
-//@Composable
-//fun InviteFriendsCard() {
-//    Card(
-//        modifier = Modifier.fillMaxWidth(),
-//        shape = RoundedCornerShape(16.dp),
-//        colors = CardDefaults.cardColors(containerColor = Color(0xFFE6E6FA))
-//    ) {
-//        Row(
-//            modifier = Modifier.padding(16.dp),
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Column(modifier = Modifier.weight(1f)) {
-//                Text("Invite your friends")
-//                Text("Get $20 for ticket", color = Color.Gray)
-//            }
-//            Button(
-//                onClick = { },
-//                colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-//                shape = RoundedCornerShape(16.dp)
-//            ) {
-//                Text("Invite", color = Color.Black)
-//            }
-//        }
-//    }
-//}
+}
