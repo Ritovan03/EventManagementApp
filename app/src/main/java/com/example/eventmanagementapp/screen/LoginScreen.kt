@@ -77,7 +77,7 @@ fun LoginScreen(navController: NavHostController) {
         Image(
             painter = painterResource(id = R.drawable.icon),
             contentDescription = "EventHub Logo",
-            modifier = Modifier.size(120.dp)
+            modifier = Modifier.size(140.dp)
         )
 
         Text(
@@ -130,14 +130,15 @@ fun LoginScreen(navController: NavHostController) {
                     onCheckedChange = { rememberMe = it },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = Color.White,
-                        checkedTrackColor = MaterialTheme.colorScheme.primary
+                        checkedTrackColor = colorResource(id = R.color.button_blue_color),
                     )
                 )
+                Spacer(modifier = Modifier.width(2.dp))
                 Text("Remember Me", fontSize = 14.sp)
             }
             Text(
                 "Forgot Password?",
-                color = MaterialTheme.colorScheme.primary,
+                color = colorResource(id = R.color.button_blue_color),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.clickable {
@@ -157,7 +158,7 @@ fun LoginScreen(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.button_blue_color)),
             shape = RoundedCornerShape(8.dp)
         ) {
             Text("SIGN IN", color = Color.White)
@@ -167,7 +168,7 @@ fun LoginScreen(navController: NavHostController) {
             text = "OR",
             fontSize = 16.sp,
             color = Color.Gray,
-            modifier = Modifier.padding(vertical = 8.dp)
+            modifier = Modifier.padding(vertical = 4.dp)
         )
 
         SocialLoginButton(
@@ -190,7 +191,7 @@ fun LoginScreen(navController: NavHostController) {
             Text(
                 "Sign up",
                 fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.primary,
+                color = colorResource(id = R.color.button_blue_color),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.clickable {
                     Log.d("Signin", "Sign up button pressed")

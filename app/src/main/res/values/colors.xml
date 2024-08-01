@@ -10,5 +10,13 @@
     <color name="light_blue">#5669FF</color>
     <color name="button_blue_color">#3D56F0</color>
     <color name="text_grey">#9D9898</color>
+    <color name="cyan">#1FA9AD</color>
+    <color name="light_cyan">#FFB0E5FF</color>
+    <color name="tech_blue">#46CDFB</color>
+    <color name="food_green">#29D697</color>
+    <color name="sports_red">#F0635A</color>
+    <color name="music_orange">#F59762</color>
+
+
 
 </resources>
