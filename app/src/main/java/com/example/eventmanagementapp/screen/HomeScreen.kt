@@ -1,10 +1,8 @@
 package com.example.eventmanagementapp.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -12,17 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Build
-import androidx.compose.material.icons.outlined.DateRange
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -40,19 +27,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.wear.compose.material.ContentAlpha
 import com.example.eventmanagementapp.R
-import com.example.eventmanagementapp.navigation.AIScreen
-import com.example.eventmanagementapp.navigation.AddEventScreen
+import com.example.eventmanagementapp.screen.AddEventScreen
 import com.example.eventmanagementapp.navigation.BottomNavItem
-import com.example.eventmanagementapp.navigation.EventScreen
-import com.example.eventmanagementapp.navigation.ProfileScreen
+import com.example.eventmanagementapp.screen.EventScreen
+import com.example.eventmanagementapp.screen.ProfileScreen
+
+
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
@@ -61,34 +48,34 @@ fun HomeScreen(navController: NavHostController) {
     val items = listOf(
         BottomNavItem(
             label = "Home",
-            icon = Icons.Filled.Home,
-            selectedIcon = Icons.Outlined.Home,
+            icon = painterResource(R.drawable.home_outlined),
+            selectedIcon = painterResource(R.drawable.home_filled),
             route = "homecontent"
         ),
         BottomNavItem(
-            label = "Profile",
-            icon = Icons.Filled.Person,
-            selectedIcon = Icons.Outlined.Person,
-            route = "profile"
-        ),
-        BottomNavItem(
-            label = "",
-            icon = Icons.Filled.Add,
-            selectedIcon = Icons.Outlined.Add,
-            route = "add_event"
-        ),
-        BottomNavItem(
             label = "Ask AI",
-            icon = Icons.Filled.Build,
-            selectedIcon = Icons.Outlined.Build,
+            icon = painterResource(R.drawable.help_outlined),
+            selectedIcon = painterResource(R.drawable.help_filled),
             route = "ai"
         ),
         BottomNavItem(
+            label = "",
+            icon = painterResource(R.drawable.add_filled),
+            selectedIcon = painterResource(R.drawable.add_filled),
+            route = "add_event"
+        ),
+        BottomNavItem(
             label = "Events",
-            icon = Icons.Filled.DateRange,
-            selectedIcon = Icons.Outlined.DateRange,
+            icon = painterResource(R.drawable.calendar_outlined),
+            selectedIcon = painterResource(R.drawable.calendar_filled),
             route = "event"
-        )
+        ),
+        BottomNavItem(
+            label = "Profile",
+            icon = painterResource(R.drawable.person_outlined),
+            selectedIcon = painterResource(R.drawable.person_filled),
+            route = "profile"
+        ),
     )
 
     Scaffold(
@@ -110,12 +97,13 @@ fun HomeScreen(navController: NavHostController) {
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Icon(
-                                            imageVector = if (selectedItem == index) item.selectedIcon else item.icon,
+                                            painter = if (selectedItem == index) item.selectedIcon else item.icon,
                                             contentDescription = item.label,
                                             tint = if (selectedItem == index) MaterialTheme.colorScheme.primary else LocalContentColor.current.copy(
                                                 alpha = ContentAlpha.medium
                                             )
                                         )
+
                                         Text(
                                             text = item.label,
                                             fontSize = 12.sp,
@@ -152,10 +140,10 @@ fun HomeScreen(navController: NavHostController) {
         Box(modifier = Modifier.padding(innerPadding)) {
             when (selectedItem) {
                 0 -> HomeContent(navController)
-                1 -> ProfileScreen(navController)
+                1 -> AIScreen(navController)
                 2 -> AddEventScreen(navController)
-                3 -> AIScreen(navController)
-                4 -> EventScreen(navController)
+                3 -> EventScreen(navController)
+                4 -> ProfileScreen(navController)
             }
         }
     }

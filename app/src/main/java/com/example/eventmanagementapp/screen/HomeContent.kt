@@ -81,7 +81,7 @@ fun HomeContent(navController: NavHostController) {
         ) {
             Column {
                 TopBar()
-                SearchBar()
+                SearchBarr()
                 Spacer(modifier = Modifier.height(20.dp)) // Add space to accommodate the FilterRow
             }
         }
@@ -132,7 +132,7 @@ fun TopBar() {
 }
 
 @Composable
-fun SearchBar() {
+fun SearchBarr() {
     var textState by remember { mutableStateOf(TextFieldValue("")) }
     Box(
         modifier = Modifier
@@ -268,7 +268,7 @@ fun UpcomingEvents(modifier: Modifier = Modifier) {
                     title = "International Band Mu...",
                     location = "36 Guild Street London, UK",
                     attendees = 20,
-                    imageResId = R.drawable.img // Replace with your actual drawable resource
+                    imageResId = R.drawable.cat_dummy // Replace with your actual drawable resource
                 )
             }
             item {
@@ -278,7 +278,7 @@ fun UpcomingEvents(modifier: Modifier = Modifier) {
                     title = "Drake's Birthday Party",
                     location = "Toronto,Canada",
                     attendees = 20,
-                    imageResId = R.drawable.img // Replace with your actual drawable resource
+                    imageResId = R.drawable.cat_dummy // Replace with your actual drawable resource
                 )
             }
             item {
@@ -288,7 +288,7 @@ fun UpcomingEvents(modifier: Modifier = Modifier) {
                     title = "Jo Malone London's...",
                     location = "Radius Gallery • Santa Cruz, CA",
                     attendees = 12,
-                    imageResId = R.drawable.img // Replace with your actual drawable resource
+                    imageResId = R.drawable.cat_dummy // Replace with your actual drawable resource
                 )
             }
         }

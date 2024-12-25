@@ -42,25 +42,12 @@ fun NavGraphBuilder(navController: NavHostController) {
     }
 }
 
-@Composable
-fun AddEventScreen(navController: NavHostController) {
 
-}
 
-@Composable
-fun AIScreen(navController: NavHostController) {
 
-}
 
-@Composable
-fun ProfileScreen(navController: NavHostController) {
 
-}
 
-@Composable
-fun EventScreen(navController: NavHostController) {
-
-}
 
 
 
