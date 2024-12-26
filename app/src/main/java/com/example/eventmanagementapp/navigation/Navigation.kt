@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.eventmanagementapp.dataclasses.EventDesc
+import com.example.eventmanagementapp.screen.EventDetailScreen
 import com.example.eventmanagementapp.screen.HomeContent
 import com.example.eventmanagementapp.screen.HomeScreen
 import com.example.eventmanagementapp.screen.LoginScreen
@@ -38,6 +40,12 @@ fun NavGraphBuilder(navController: NavHostController) {
 
         composable("rp3") {
             ResetPass3(navController = navController)
+        }
+        composable("eventDetail") {
+            val event = navController.previousBackStackEntry?.savedStateHandle?.get<EventDesc>("event")
+            if (event != null) {
+                EventDetailScreen(navController = navController, event = event)
+            }
         }
     }
 }

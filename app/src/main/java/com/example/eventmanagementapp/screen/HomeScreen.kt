@@ -99,7 +99,7 @@ fun HomeScreen(navController: NavHostController) {
                                         Icon(
                                             painter = if (selectedItem == index) item.selectedIcon else item.icon,
                                             contentDescription = item.label,
-                                            tint = if (selectedItem == index) MaterialTheme.colorScheme.primary else LocalContentColor.current.copy(
+                                            tint = if (selectedItem == index) Color(0xFF6B4EE6) else LocalContentColor.current.copy(
                                                 alpha = ContentAlpha.medium
                                             )
                                         )

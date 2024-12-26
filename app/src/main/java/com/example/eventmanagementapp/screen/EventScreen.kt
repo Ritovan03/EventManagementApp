@@ -1,5 +1,6 @@
 package com.example.eventmanagementapp.screen
 
+import android.os.Parcelable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -58,18 +59,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.eventmanagementapp.R
+import com.example.eventmanagementapp.dataclasses.EventDataSource
+import com.example.eventmanagementapp.dataclasses.EventDesc
+import kotlinx.parcelize.Parcelize
 
-data class EventDesc(
-    val id: Int,
-    val title: String,
-    val date: String,
-    val time: String,
-    val description: String,
-    val imageRes: Int,
-    val location: String,
-    val organizer: String,
-    val price: String
-)
+
 
 @Composable
 fun EventCard(event: EventDesc, onEventClick: () -> Unit) {
@@ -77,19 +71,25 @@ fun EventCard(event: EventDesc, onEventClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onEventClick),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(8.dp), // Make it rectangular like in the image
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFFAFAFA) // Off-white color
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 3.dp // Subtle elevation
+        )
     ) {
         Row(
             modifier = Modifier
-                .padding(12.dp)
-                .height(80.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .height(100.dp)
         ) {
             Image(
                 painter = painterResource(id = event.imageRes),
                 contentDescription = null,
                 modifier = Modifier
                     .size(80.dp)
-                    .clip(RoundedCornerShape(12.dp)),
+                    .clip(RoundedCornerShape(8.dp)),
                 contentScale = ContentScale.Crop
             )
 
@@ -101,12 +101,14 @@ fun EventCard(event: EventDesc, onEventClick: () -> Unit) {
                 Text(
                     text = "${event.date} - ${event.time}",
                     color = Color(0xFF6B4EE6),
+                    fontSize = 12.sp,
                     style = MaterialTheme.typography.bodySmall
                 )
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = event.title,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }
@@ -119,25 +121,7 @@ fun EventScreen(navController: NavController) {
     var searchQuery by remember { mutableStateOf("") }
     var showFilterSheet by remember { mutableStateOf(false) }
 
-    val events = remember {
-        listOf(
-            EventDesc(1, "A virtual evening of smooth jazz", "1ST MAY", "SAT-2:00 PM",
-                "Join us for an evening of smooth jazz with renowned artists.",
-                android.R.drawable.ic_menu_gallery, "Virtual Event", "Jazz Society", "Free"),
-            EventDesc(2, "Jo malone london's mother's day", "1ST MAY", "SAT-2:00 PM",
-                "Celebrate mother's day with exclusive Jo Malone London events.",
-                android.R.drawable.ic_menu_gallery, "London, UK", "Jo Malone", "£50"),
-            EventDesc(3, "Women's leadership conference", "1ST MAY", "SAT-2:00 PM",
-                "Empowering women leaders through networking and workshops.",
-                android.R.drawable.ic_menu_gallery, "Conference Center", "WLC", "£100"),
-            EventDesc(4, "International kids safe parents night out", "1ST MAY", "SAT-2:00 PM",
-                "A safe and fun evening for kids while parents enjoy their time.",
-                android.R.drawable.ic_menu_gallery, "Community Center", "SafeKids Org", "£25"),
-            EventDesc(5, "International gala music festival", "1ST MAY", "SAT-2:00 PM",
-                "A celebration of international music and culture.",
-                android.R.drawable.ic_menu_gallery, "City Hall", "World Music", "£75")
-        )
-    }
+    val events = remember { EventDataSource.getEvents() }
 
     val filteredEvents = events.filter {
         it.title.contains(searchQuery, ignoreCase = true)
@@ -195,7 +179,8 @@ fun EventScreen(navController: NavController) {
             ) {
                 items(filteredEvents) { event ->
                     EventCard(event = event, onEventClick = {
-                        navController.navigate("eventDetail/${event.id}")
+                        navController.currentBackStackEntry?.savedStateHandle?.set("event", event)
+                        navController.navigate("eventDetail")
                     })
                 }
             }
@@ -235,61 +220,4 @@ fun FilterBottomSheet(onDismiss: () -> Unit) {
     }
 }
 
-@Composable
-fun EventDetailScreen(event: EventDesc) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Image(
-            painter = painterResource(id = event.imageRes),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .clip(RoundedCornerShape(16.dp)),
-            contentScale = ContentScale.Crop
-        )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = event.title,
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "${event.date} - ${event.time}",
-            color = Color(0xFF6B4EE6)
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(text = "Location: ${event.location}")
-        Text(text = "Organizer: ${event.organizer}")
-        Text(text = "Price: ${event.price}")
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = event.description,
-            style = MaterialTheme.typography.bodyLarge
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = { /* Handle booking */ },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF6B4EE6)
-            )
-        ) {
-            Text("Book Now")
-        }
-    }
-}

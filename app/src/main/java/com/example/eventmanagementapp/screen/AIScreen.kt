@@ -40,7 +40,7 @@ fun AIScreen(navController: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF5F5F5))
-            .padding(16.dp)
+            .padding(16.dp, bottom = 16.dp)
     ) {
         // Chat messages
         LazyColumn(
